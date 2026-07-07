@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מבוא לרשתות תקשורת - חווית למידה אינטראקטיבית</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Heebo & Rubik -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Heebo', 'Rubik', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#bae2fd',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Grid background effect */
+        .grid-bg {
+            background-image: radial-gradient(#e2e8f0 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="grid-bg min-h-screen flex flex-col">
+
+    <!-- TOP HEADER / NAVBAR -->
+    <header class="bg-gradient-to-r from-brand-900 via-brand-700 to-indigo-900 text-white shadow-xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-white/10 p-2.5 rounded-xl border border-white/20">
+                    <i class="fa-solid fa-network-wired text-3xl text-brand-200"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-black tracking-tight flex items-center gap-2">
+                        <span>סייבר ורשתות תקשורת</span>
+                        <span class="bg-brand-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">כיתה ט'</span>
+                    </h1>
+                    <p class="text-xs text-brand-100 font-light">למידה משולבת, יצירה ועבודת צוות בעידן ה-AI</p>
+                </div>
+            </div>
+            
+            <!-- Dynamic User Welcome & Score -->
+            <div class="flex items-center gap-4">
+                <div class="bg-white/10 px-4 py-2 rounded-lg text-sm border border-white/10 flex items-center gap-2">
+                    <i class="fa-solid fa-user-astronaut text-brand-200"></i>
+                    <span>שלום, <span id="studentNameDisplay" class="font-bold text-brand-100">אורח/ת</span></span>
+                    <button onclick="changeStudentName()" class="text-xs text-brand-200 underline hover:text-white mr-1">שינוי שם</button>
+                </div>
+                <div class="bg-emerald-500/20 text-emerald-300 px-3 py-2 rounded-lg text-sm border border-emerald-500/30 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-nodes text-emerald-400"></i>
+                    <span>תוצרים בתיקייה: <strong id="portfolioCount" class="text-white">0</strong></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Menu -->
+        <nav class="bg-brand-900/50 border-t border-white/10">
+            <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto whitespace-nowrap">
+                <button onclick="switchTab('lessons')" id="btn-lessons" class="nav-tab py-3 px-5 border-b-2 border-brand-500 text-brand-100 font-medium text-sm flex items-center gap-2 transition">
+                    <i class="fa-solid fa-book-open"></i>
+                    מסע הלמידה (שיעורים)
+                </button>
+                <button onclick="switchTab('padlet')" id="btn-padlet" class="nav-tab py-3 px-5 border-b-2 border-transparent text-slate-300 hover:text-white font-medium text-sm flex items-center gap-2 transition">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                    הלוח הכיתתי (Padlet)
+                </button>
+                <button onclick="switchTab('portfolio')" id="btn-portfolio" class="nav-tab py-3 px-5 border-b-2 border-transparent text-slate-300 hover:text-white font-medium text-sm flex items-center gap-2 transition">
+                    <i class="fa-solid fa-folder-open"></i>
+                    התיקייה האישית שלי
+                </button>
+                <button onclick="switchTab('ai-hub')" id="btn-ai-hub" class="nav-tab py-3 px-5 border-b-2 border-transparent text-slate-300 hover:text-white font-medium text-sm flex items-center gap-2 transition">
+                    <i class="fa-solid fa-robot"></i>
+                    עוזר ה-AI הרשתי
+                </button>
+                <button onclick="switchTab('teacher-guide')" id="btn-teacher-guide" class="nav-tab py-3 px-5 border-b-2 border-transparent text-emerald-400 hover:text-emerald-300 font-bold text-sm flex items-center gap-2 mr-auto transition">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    מדריך למורה (ראשי פרקים)
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:py-8 flex flex-col gap-6">
+
+        <!-- ALERTS AND NOTIFICATIONS -->
+        <div id="toast" class="hidden fixed bottom-5 left-5 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-3 border border-slate-700 animate-bounce">
+            <span class="p-1 bg-brand-500 rounded-full text-xs" id="toastIcon"><i class="fa-solid fa-check"></i></span>
+            <span id="toastMsg" class="text-sm font-medium">הודעת מערכת</span>
+        </div>
+
+        <!-- ==================== TAB: LESSONS ==================== -->
+        <section id="tab-lessons" class="tab-content block">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                
+                <!-- Lessons Sidebar Map -->
+                <div class="lg:col-span-1 bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-4">
+                    <h3 class="font-bold text-slate-800 text-lg border-b pb-3 flex items-center gap-2 text-brand-700">
+                        <i class="fa-solid fa-map-signs"></i>
+                        מפת מסע הרשת
+                    </h3>
+                    <div class="flex flex-col gap-3">
+                        <button onclick="selectLesson(1)" id="side-l1" class="lesson-sidebar-btn w-full text-right p-3 rounded-xl border-r-4 border-brand-500 bg-brand-50 text-brand-700 font-bold flex flex-col transition">
+                            <span class="text-xs text-brand-600/70 font-normal">שיעור 1</span>
+                            <span class="text-sm">מי אנחנו ברשת? (IP ואנטומיה)</span>
+                        </button>
+                        <button onclick="selectLesson(2)" id="side-l2" class="lesson-sidebar-btn w-full text-right p-3 rounded-xl border-r-4 border-transparent hover:bg-slate-50 text-slate-600 font-medium flex flex-col transition">
+                            <span class="text-xs text-slate-400 font-normal">שיעור 2</span>
+                            <span class="text-sm">איך המידע נוסע? (חבילות ונתבים)</span>
+                        </button>
+                        <button onclick="selectLesson(3)" id="side-l3" class="lesson-sidebar-btn w-full text-right p-3 rounded-xl border-r-4 border-transparent hover:bg-slate-50 text-slate-600 font-medium flex flex-col transition">
+                            <span class="text-xs text-slate-400 font-normal">שיעור 3</span>
+                            <span class="text-sm">ספר הטלפונים של האינטרנט (DNS)</span>
+                        </button>
+                        <button onclick="selectLesson(4)" id="side-l4" class="lesson-sidebar-btn w-full text-right p-3 rounded-xl border-r-4 border-transparent hover:bg-slate-50 text-slate-600 font-medium flex flex-col transition">
+                            <span class="text-xs text-slate-400 font-normal">שיעור 4</span>
+                            <span class="text-sm">פרויקט הדור הבא (בית חכם)</span>
+                        </button>
+                    </div>
+
+                    <!-- Peer Status Panel -->
+                    <div class="mt-4 p-4 bg-indigo-50/50 rounded-xl border border-indigo-100">
+                        <h4 class="text-xs font-bold text-indigo-800 uppercase tracking-wider mb-2 flex items-center gap-1">
+                            <i class="fa-solid fa-users-viewfinder"></i>
+                            פעילות כיתתית כעת
+                        </h4>
+                        <div class="space-y-2 text-xs text-slate-600">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span><strong>לירון</strong> העלה הרגע תוצר DNS ללוח!</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span><strong>תומר</strong> ו<strong>דניאל</strong> עובדים ביחד כעת.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lesson Content Display -->
+                <div class="lg:col-span-3 flex flex-col gap-6">
+                    
+                    <!-- LESSON 1 CONTENT -->
+                    <div id="lesson-1" class="lesson-card bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-5">
+                            <div>
+                                <span class="bg-brand-100 text-brand-700 text-xs font-bold px-2.5 py-1 rounded-full">שיעור 1: מבוא ועולם ה-IP</span>
+                                <h2 class="text-2xl font-black text-slate-800 mt-2">מי אנחנו ברשת? כתובות IP ואנטומיה בסיסית</h2>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm text-slate-500">
+                                <i class="fa-regular fa-clock"></i>
+                                <span>90 דקות (שיעור כפול)</span>
+                            </div>
+                        </div>
+
+                        <!-- Introductory block -->
+                        <div class="prose max-w-none text-slate-600 space-y-4">
+                            <p class="text-lg text-slate-700 font-medium font-bold">איך מחשבים, טלפונים ומקררים חכמים יודעים לדבר ביניהם בלי להתבלבל? התשובה מתחילה בכתובת ייחודית.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                    <h4 class="font-bold text-brand-700 mb-2"><i class="fa-solid fa-circle-info ml-1"></i> מה זה בכלל IP?</h4>
+                                    <p class="text-sm">כמו שלבית שלכם יש כתובת פיזית למכתבים, לכל מכשיר המחובר לאינטרנט יש כתובת IP (Internet Protocol). היא מורכבת מ-4 מספרים מופרדים בנקודות (בגרסת IPv4 הנפוצה) כמו: <code class="bg-slate-200 px-1 rounded text-xs">192.168.1.1</code>.</p>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                    <h4 class="font-bold text-indigo-700 mb-2"><i class="fa-solid fa-circle-nodes ml-1"></i> רשת מקומית מול רשת גלובלית</h4>
+                                    <p class="text-sm">בתוך הבית או הכיתה שלכם, הנתב (Router) מחלק לכם כתובות מקומיות (Private IP). כשאתם יוצאים החוצה לאינטרנט העולמי, כולכם משתמשים בכתובת ציבורית אחת (Public IP).</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 1: Internet Search Challenge -->
+                        <div class="bg-brand-50 p-5 rounded-2xl border border-brand-100 space-y-4">
+                            <div class="flex items-center gap-2 text-brand-800 font-bold">
+                                <span class="bg-brand-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">1</span>
+                                <h4>משימת חיפוש וגילוי עצמי באינטרנט</h4>
+                            </div>
+                            <p class="text-sm text-slate-700">פתחו כרטיסייה חדשה בדפדפן, חפשו בגוגל: <strong class="text-brand-700">"What is my IP"</strong> או היכנסו לאתר שמציג זאת. גלו את הכתובת הציבורית שלכם כעת!</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">כתובת ה-IP הציבורית שמצאתם:</label>
+                                    <input type="text" id="l1-ip" placeholder="לדוגמה: 84.110.23.45" class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 text-left" dir="ltr">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">מהו המיקום הגיאוגרפי המשוער של ה-IP הזה?</label>
+                                    <input type="text" id="l1-location" placeholder="לדוגמה: תל אביב, ישראל" class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Pose an AI Question -->
+                        <div class="bg-indigo-50 p-5 rounded-2xl border border-indigo-100 space-y-4">
+                            <div class="flex items-center gap-2 text-indigo-950 font-bold">
+                                <span class="bg-indigo-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">2</span>
+                                <h4>שאילת שאלות בסיוע בינה מלאכותית</h4>
+                            </div>
+                            <p class="text-sm text-slate-700">היעזרו בטאב <strong>"עוזר ה-AI"</strong> שלנו (או שאלו כאן למטה) כדי לגלות: <strong>מה ההבדל בין IPv4 ל-IPv6? ומדוע היינו צריכים להמציא את גרסה 6?</strong></p>
+                            
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">תשובתכם (נסחו במילים שלכם לאחר התייעצות עם ה-AI):</label>
+                                <textarea id="l1-ai-answer" rows="3" placeholder="הסבירו בקצרה ובשפה פשוטה..." class="w-full p-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Self expression creative task -->
+                        <div class="bg-emerald-50/50 p-5 rounded-2xl border border-emerald-100 space-y-4">
+                            <div class="flex items-center gap-2 text-emerald-800 font-bold">
+                                <span class="bg-emerald-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">3</span>
+                                <h4>ביטוי עצמי: כרטיס הזהות הרשתי שלי</h4>
+                            </div>
+                            <p class="text-sm text-slate-700">עצבו את "כרטיס הרשת" האישי שלכם. תנו לו שם קוד, הגדירו את התפקיד שלכם ברשת (למשל: "מנתב על", "חבילת מידע מהירה", "מגן חומת אש") וספרו מדוע בחרתם בו.</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">שם קוד רשתי / כינוי:</label>
+                                    <input type="text" id="l1-codename" placeholder="לדוגמה: CyberKnight" class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">איזה רכיב רשת הכי מאפיין את האופי שלכם ולמה?</label>
+                                    <input type="text" id="l1-character" placeholder="לדוגמה: נתב, כי אני אוהב לקשר בין אנשים" class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons: Save & Share -->
+                        <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-100">
+                            <button onclick="saveLesson1ToPortfolio()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition flex items-center gap-2">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                שמירה בתיקייה אישית שלי
+                            </button>
+                            <button onclick="shareLesson1ToPadlet()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition flex items-center gap-2">
+                                <i class="fa-solid fa-share-from-square"></i>
+                                פרסום בלוח הכיתתי להערכת עמיתים
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- LESSON 2 CONTENT -->
+                    <div id="lesson-2" class="lesson-card hidden bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-5">
+                            <div>
+                                <span class="bg-brand-100 text-brand-700 text-xs font-bold px-2.5 py-1 rounded-full">שיעור 2: תעבורת נתונים</span>
+                                <h2 class="text-2xl font-black text-slate-800 mt-2">איך המידע נוסע? עולם החבילות (Packets) והנתבים</h2>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm text-slate-500">
+                                <i class="fa-regular fa-clock"></i>
+                                <span>90 דקות (שיעור כפול)</span>
+                            </div>
+                        </div>
+
+                        <div class="prose max-w-none text-slate-600 space-y-4">
+                            <p class="text-lg text-slate-700 font-medium">כשאתם שולחים תמונה בווטסאפ או רואים סרטון בטיקטוק, הקובץ לא נשלח כחתיכה אחת ענקית. הוא מתפרק למיליוני "חבילות" קטנטנות שנוסעות בדרכים שונות ברחבי הגלובוס.</p>
+                            
+                            <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 flex gap-3 items-start">
+                                <span class="text-2xl text-amber-500"><i class="fa-solid fa-lightbulb"></i></span>
+                                <div>
+                                    <h4 class="font-bold text-amber-800 text-sm mb-1">אנלוגיית הפאזל והדואר:</h4>
+                                    <p class="text-xs text-amber-900 leading-relaxed">תארו לעצמכם שאתם רוצים לשלוח פאזל של 1,000 חלקים לחבר בדואר. במקום לשלוח קופסה אחת גדולה ויקרה, אתם שמים כל חלק במעטפה קטנה עם מספר חלק, כתובת השולח וכתובת הנמען. החלקים מגיעים בדרכים שונות ובקצב שונה. בצד השני, החבר מרכיב את הפאזל מחדש לפי המספרים שרשמתם!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 1: Internet Search & Compare -->
+                        <div class="bg-brand-50 p-5 rounded-2xl border border-brand-100 space-y-4">
+                            <div class="flex items-center gap-2 text-brand-800 font-bold">
+                                <span class="bg-brand-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">1</span>
+                                <h4>חקר באינטרנט: מה כוללת "חבילה" ברשת?</h4>
+                            </div>
+                            <p class="text-sm text-slate-700">חפשו באינטרנט את המונח <strong>"מבנה חבילה ברשת" (Packet Header)</strong>. מהם החלקים העיקריים של חבילת מידע?</p>
+                            
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">1. מה יש ב"פתיח" (Header) של החבילה?</label>
+                                    <input type="text" id="l2-header" placeholder="לדוגמה: כתובות מקור ויעד, מספר חבילה..." class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">2. מהו ה"מטען" או הגוף (Payload)?</label>
+                                    <input type="text" id="l2-payload" placeholder="המידע האמיתי עצמו (חלק מהתמונה, חלק מהטקסט)" class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Collaboration & Peer-cross-referencing -->
+                        <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100 space-y-4">
+                            <div class="flex items-center gap-2 text-emerald-900 font-bold">
+                                <span class="bg-emerald-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">2</span>
+                                <h4>משימת עמיתים: הצלבה והשוואה (כפל תפקידים)</h4>
+                            </div>
+                            <p class="text-sm text-slate-700">פנו לחבר/ה מהכיתה (או הציצו בתוצרים שלהם בלוח הפדלט). שאלו אותם: <strong>מה תפקידו של הנתב (Router) ברשת?</strong> השוו בין ההסבר שלכם להסבר שלהם, וכתבו כאן הגדרה משותפת ומנצחת!</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">שם השותף/ה להצלבה:</label>
+                                    <input type="text" id="l2-partner" placeholder="שם השותף בכיתה" class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">ההסבר המשותף והמדויק שלכם לתפקיד הנתב:</label>
+                                    <textarea id="l2-router-def" rows="2" placeholder="נתב הוא כמו..." class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Self Expression -->
+                        <div class="bg-indigo-50 p-5 rounded-2xl border border-indigo-100 space-y-4">
+                            <div class="flex items-center gap-2 text-indigo-950 font-bold">
+                                <span class="bg-indigo-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">3</span>
+                                <h4>ביטוי עצמי: תסריט קומיקס קצר "חבילה בדרכים"</h4>
+                            </div>
+                            <p class="text-sm text-slate-700">כתבו דיאלוג הומוריסטי קצר בין שתי חבילות מידע שנפגשות בתוך נתב עמוס בדרך לשרת של פורטנייט או טיקטוק.</p>
+                            
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">הדיאלוג הקומי שלכם:</label>
+                                <textarea id="l2-comic" rows="4" placeholder="חבילה א': 'היי! למה אתה דוחף? אני שייכת לפריים הראשי של הריקוד!'&#10;חבילה ב': 'סליחה, אבל הנתב שלח אותי דרך לוויין בסיביר, קפאתי מקור...'" class="w-full p-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-100">
+                            <button onclick="saveLesson2ToPortfolio()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition flex items-center gap-2">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                שמירה בתיקייה אישית שלי
+                            </button>
+                            <button onclick="shareLesson2ToPadlet()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition flex items-center gap-2">
+                                <i class="fa-solid fa-share-from-square"></i>
+                                פרסום בלוח הכיתתי להערכת עמיתים
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- LESSON 3 CONTENT -->
+                    <div id="lesson-3" class="lesson-card hidden bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-5">
+                            <div>
+                                <span class="bg-brand-100 text-brand-700 text-xs font-bold px-2.5 py-1 rounded-full">שיעור 3: DNS וספר הטלפונים של הרשת</span>
+                                <h2 class="text-2xl font-black text-slate-800 mt-2">ספר הטלפונים של האינטרנט (DNS - Domain Name System)</h2>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm text-slate-500">
+                                <i class="fa-regular fa-clock"></i>
+                                <span>90 דקות (שיעור כפול)</span>
+                            </div>
+                        </div>
+
+                        <div class="prose max-w-none text-slate-600 space-y-4">
+                            <p class="text-lg text-slate-700 font-medium">כדי להיכנס לאתר האהוב עליכם, אתם מקלידים אותיות באנגלית (כמו <code class="bg-slate-100 px-1.5 py-0.5 rounded text-brand-600 font-bold">google.com</code>). אבל מחשבים לא מבינים מילים! הם צריכים את המספרים (כתובת ה-IP).</p>
+                            <p>כאן נכנס שרת ה-<strong>DNS</strong>. הוא מתפקד כספר הטלפונים הגדול בעולם שמחבר בין שם האתר לכתובת ה-IP האמיתית שלו.</p>
+                        </div>
+
+                        <!-- Step 1: Internet Search Challenge -->
+                        <div class="bg-brand-50 p-5 rounded-2xl border border-brand-100 space-y-4">
+                            <div class="flex items-center gap-2 text-brand-800 font-bold">
+                                <span class="bg-brand-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">1</span>
+                                <h4>אתגר חיפוש: מה קורה מאחורי הקלעים?</h4>
+                            </div>
+                            <p class="text-sm text-slate-700">בצעו חיפוש מהיר באינטרנט: <strong>מהו שרת DNS שורש (Root Nameserver)?</strong> וכמה שרתי שורש כאלו קיימים בעולם?</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">ההסבר שלכם לשרת שורש (Root):</label>
+                                    <input type="text" id="l3-root-def" placeholder="מי הוא ומה תפקידו בהיררכיה?" class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">כמה שרתי שורש (זהויות קצה) קיימים בעולם?</label>
+                                    <input type="text" id="l3-root-count" placeholder="רמז: מספר חד או דו ספרתי..." class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Use AI to solve a challenge -->
+                        <div class="bg-indigo-50 p-5 rounded-2xl border border-indigo-100 space-y-4">
+                            <div class="flex items-center gap-2 text-indigo-950 font-bold">
+                                <span class="bg-indigo-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">2</span>
+                                <h4>עבודת חקר עם AI: מהו "מתקפת הרעלת DNS" (DNS Poisoning)?</h4>
+                            </div>
+                            <p class="text-sm text-slate-700">סייבר והגנה! פתחו את עוזר ה-AI בצד שמאל/בטאב, ושאלו אותו: <strong>"איך פצחנים (האקרים) יכולים לרמות אותנו בעזרת הרעלת מטמון DNS?"</strong></p>
+                            
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">הסבירו את הסכנה ואיך מתגוננים מפניה (במילים פשוטות):</label>
+                                <textarea id="l3-dns-poison" rows="3" placeholder="הסבר קצר על הרעלת DNS..." class="w-full p-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Peer Reflection -->
+                        <div class="bg-emerald-50/50 p-5 rounded-2xl border border-emerald-100 space-y-4">
+                            <div class="flex items-center gap-2 text-emerald-800 font-bold">
+                                <span class="bg-emerald-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">3</span>
+                                <h4>שיתוף פעולה: המציאו סיומת אתרים (.com, .org, .edu) משלכם!</h4>
+                                <span class="bg-emerald-200 text-emerald-800 text-[10px] px-2 py-0.5 rounded font-bold">עבודת זוגות</span>
+                            </div>
+                            <p class="text-sm text-slate-700">הסיומות הידועות הן <code class="bg-slate-100 px-1 rounded font-bold">.com</code> לחברות מסחריות או <code class="bg-slate-100 px-1 rounded font-bold">.gov</code> לממשלה. המציאו יחד עם חבר סיומת חדשה וייחודית לעולם שלכם!</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">הסיומת שהמצאתם (לדוגמה: .gaming):</label>
+                                    <input type="text" id="l3-tld" placeholder="לדוגמה: .gaming" class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-left" dir="ltr">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">מי רשאי להשתמש בסיומת הזאת ואיזה אתר לדוגמה יוקם בה?</label>
+                                    <input type="text" id="l3-tld-desc" placeholder="הסבר קצר על קהל היעד והשימוש" class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-100">
+                            <button onclick="saveLesson3ToPortfolio()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition flex items-center gap-2">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                שמירה בתיקייה אישית שלי
+                            </button>
+                            <button onclick="shareLesson3ToPadlet()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition flex items-center gap-2">
+                                <i class="fa-solid fa-share-from-square"></i>
+                                פרסום בלוח הכיתתי להערכת עמיתים
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- LESSON 4 CONTENT -->
+                    <div id="lesson-4" class="lesson-card hidden bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-5">
+                            <div>
+                                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">שיעור 4: פרויקט מסכם (IoT)</span>
+                                <h2 class="text-2xl font-black text-slate-800 mt-2">רשת הבית החכם שלי (IoT - Internet of Things)</h2>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm text-slate-500">
+                                <i class="fa-regular fa-clock"></i>
+                                <span>180 דקות (שיעור כפול מורחב)</span>
+                            </div>
+                        </div>
+
+                        <div class="prose max-w-none text-slate-600 space-y-4">
+                            <p class="text-lg text-slate-700 font-medium">עברתם דרך ארוכה! למדתם על IP, חבילות, נתבים ו-DNS. כעת הגיע הזמן לחבר הכל יחד ולתכנן את הבית החכם של העתיד.</p>
+                            <p class="text-sm">במשימה זו, אתם אדריכלי הרשת של בית מודרני מבוסס **IoT (האינטרנט של הדברים)** שבו המקרר, המנורות, הקומקום ומערכת ההגנה מדברים זה עם זה.</p>
+                        </div>
+
+                        <!-- Step 1: Design IoT map -->
+                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+                            <h4 class="font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-house-laptop text-brand-600"></i>
+                                תכנון ארכיטקטורת הבית
+                            </h4>
+                            <p class="text-xs text-slate-600">הגדירו לפחות 4 מכשירים חכמים בבית שלכם, ותנו לכל אחד תפקיד, כתובת IP מקומית ואיזה מידע הוא שולח לנתב המרכזי.</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
+                                    <span class="text-xs font-bold text-brand-600">מכשיר 1 (לדוגמה: מזגן חכם ❄️)</span>
+                                    <input type="text" id="l4-dev1-name" placeholder="שם המכשיר" class="w-full p-2 border rounded text-xs">
+                                    <input type="text" id="l4-dev1-ip" placeholder="IP מקומי (למשל: 192.168.1.50)" class="w-full p-2 border rounded text-xs text-left" dir="ltr">
+                                    <input type="text" id="l4-dev1-data" placeholder="איזה מידע הוא משדר ברשת?" class="w-full p-2 border rounded text-xs">
+                                </div>
+                                <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
+                                    <span class="text-xs font-bold text-brand-600">מכשיר 2 (לדוגמה: מצלמת אבטחה 📷)</span>
+                                    <input type="text" id="l4-dev2-name" placeholder="שם המכשיר" class="w-full p-2 border rounded text-xs">
+                                    <input type="text" id="l4-dev2-ip" placeholder="IP מקומי" class="w-full p-2 border rounded text-xs text-left" dir="ltr">
+                                    <input type="text" id="l4-dev2-data" placeholder="איזה מידע הוא משדר ברשת?" class="w-full p-2 border rounded text-xs">
+                                </div>
+                                <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
+                                    <span class="text-xs font-bold text-brand-600">מכשיר 3 (לדוגמה: מקרר חכם 🍎)</span>
+                                    <input type="text" id="l4-dev3-name" placeholder="שם המכשיר" class="w-full p-2 border rounded text-xs">
+                                    <input type="text" id="l4-dev3-ip" placeholder="IP מקומי" class="w-full p-2 border rounded text-xs text-left" dir="ltr">
+                                    <input type="text" id="l4-dev3-data" placeholder="איזה מידע הוא משדר ברשת?" class="w-full p-2 border rounded text-xs">
+                                </div>
+                                <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
+                                    <span class="text-xs font-bold text-brand-600">מכשיר 4 (ההמצאה המשוגעת שלכם! 🚀)</span>
+                                    <input type="text" id="l4-dev4-name" placeholder="שם המכשיר שלכם" class="w-full p-2 border rounded text-xs">
+                                    <input type="text" id="l4-dev4-ip" placeholder="IP מקומי" class="w-full p-2 border rounded text-xs text-left" dir="ltr">
+                                    <input type="text" id="l4-dev4-data" placeholder="מה המכשיר הזה עושה?" class="w-full p-2 border rounded text-xs">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Use AI to secure the IoT House -->
+                        <div class="bg-rose-50 p-5 rounded-2xl border border-rose-100 space-y-4">
+                            <div class="flex items-center gap-2 text-rose-950 font-bold">
+                                <span class="bg-rose-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">!</span>
+                                <h4>חומת האש הביתית (Cyber Security Challenge)</h4>
+                            </div>
+                            <p class="text-sm text-slate-700">שאלו את עוזר ה-AI בטאב: <strong>"איך פצחנים (האקרים) יכולים להשתלט על מכשירי IoT ביתיים שאינם מוגנים, וכיצד ניתן להגן על הנתב הראשי של הבית?"</strong></p>
+                            
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">רשמו 3 כללי ברזל לשמירה על אבטחת רשת הבית החכם שלכם:</label>
+                                <textarea id="l4-security" rows="3" placeholder="1. ססמה חזקה לנתב...&#10;2. ...&#10;3. ..." class="w-full p-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-rose-500"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-100">
+                            <button onclick="saveLesson4ToPortfolio()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition flex items-center gap-2">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                שמירה בתיקייה אישית שלי
+                            </button>
+                            <button onclick="shareLesson4ToPadlet()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition flex items-center gap-2">
+                                <i class="fa-solid fa-share-from-square"></i>
+                                פרסום בלוח הכיתתי להערכת עמיתים
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== TAB: COLLABORATIVE PADLET BOARD ==================== -->
+        <section id="tab-padlet" class="tab-content hidden space-y-6">
+            <div class="bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-black flex items-center gap-2">
+                        <i class="fa-solid fa-chalkboard"></i>
+                        הלוח הכיתתי השיתופי (Simulated Padlet)
+                    </h2>
+                    <p class="text-sm text-amber-100 mt-1">כאן מתרחשת למידת עמיתים אמיתית! הציגו את התוצרים היפים שלכם, עברו על התשובות של החברים, רשמו הערות בונות והעניקו לבבות לתוצרים מצטיינים.</p>
+                </div>
+                <button onclick="openNewPostModal()" class="bg-white text-amber-700 hover:bg-amber-50 font-bold px-5 py-2.5 rounded-xl transition flex items-center gap-2 text-sm shadow">
+                    <i class="fa-solid fa-plus"></i>
+                    פוסט חדש על הלוח
+                </button>
+            </div>
+
+            <!-- Filter posts by lesson -->
+            <div class="flex gap-2 overflow-x-auto pb-1">
+                <button onclick="filterPadlet('all')" class="padlet-filter-btn px-4 py-1.5 rounded-full bg-slate-900 text-white text-xs font-bold">הכל</button>
+                <button onclick="filterPadlet('lesson1')" class="padlet-filter-btn px-4 py-1.5 rounded-full bg-white text-slate-600 hover:bg-slate-100 border text-xs font-medium">שיעור 1 (IP)</button>
+                <button onclick="filterPadlet('lesson2')" class="padlet-filter-btn px-4 py-1.5 rounded-full bg-white text-slate-600 hover:bg-slate-100 border text-xs font-medium">שיעור 2 (חבילות)</button>
+                <button onclick="filterPadlet('lesson3')" class="padlet-filter-btn px-4 py-1.5 rounded-full bg-white text-slate-600 hover:bg-slate-100 border text-xs font-medium">שיעור 3 (DNS)</button>
+                <button onclick="filterPadlet('lesson4')" class="padlet-filter-btn px-4 py-1.5 rounded-full bg-white text-slate-600 hover:bg-slate-100 border text-xs font-medium">שיעור 4 (הבית החכם)</button>
+            </div>
+
+            <!-- Padlet Grid Board -->
+            <div id="padlet-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamic Posts -->
+            </div>
+
+            <!-- Post Modal -->
+            <div id="post-modal" class="hidden fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <h3 class="font-bold text-slate-800 text-lg">שיתוף פוסט חדש בלוח</h3>
+                        <button onclick="closeNewPostModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">השם שלך:</label>
+                            <input type="text" id="modal-author" class="w-full p-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">נושא / סיווג שיעור:</label>
+                            <select id="modal-lesson" class="w-full p-2 border rounded-lg text-sm">
+                                <option value="lesson1">שיעור 1 - עולם ה-IP</option>
+                                <option value="lesson2">שיעור 2 - חבילות ונתבים</option>
+                                <option value="lesson3">שיעור 3 - עולם ה-DNS</option>
+                                <option value="lesson4">שיעור 4 - הבית החכם (IoT)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">כותרת יפה לפוסט:</label>
+                            <input type="text" id="modal-title" placeholder="למשל: כרטיס הרשת המלכותי שלי" class="w-full p-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">תוכן הפוסט (הסבר, דיאלוג, המצאה או שיתוף שלכם):</label>
+                            <textarea id="modal-content" rows="4" placeholder="שתפו כאן בפירוט..." class="w-full p-2 border rounded-lg text-sm"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">צבע פתקית:</label>
+                            <div class="flex gap-2">
+                                <button type="button" onclick="selectColor('bg-yellow-100 border-yellow-200')" class="w-8 h-8 rounded-full bg-yellow-100 border border-yellow-300 ring-2 ring-brand-500 color-btn"></button>
+                                <button type="button" onclick="selectColor('bg-pink-100 border-pink-200')" class="w-8 h-8 rounded-full bg-pink-100 border border-pink-300 color-btn"></button>
+                                <button type="button" onclick="selectColor('bg-blue-100 border-blue-200')" class="w-8 h-8 rounded-full bg-blue-100 border border-blue-300 color-btn"></button>
+                                <button type="button" onclick="selectColor('bg-emerald-100 border-emerald-200')" class="w-8 h-8 rounded-full bg-emerald-100 border border-emerald-300 color-btn"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 pt-3 border-t">
+                        <button onclick="closeNewPostModal()" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">ביטול</button>
+                        <button onclick="submitNewPost()" class="px-5 py-2 text-sm bg-brand-600 text-white font-bold rounded-lg hover:bg-brand-700 shadow">פרסום</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== TAB: PERSONAL PORTFOLIO ==================== -->
+        <section id="tab-portfolio" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-folder-closed text-brand-600"></i>
+                        התיקייה האישית הדיגיטלית שלי
+                    </h2>
+                    <p class="text-sm text-slate-500 mt-1">כאן נשמרים כל התוצרים הלימודיים שלך, המשימות שסיימת ותשובותיך המעמיקות. תוכלו להציג אותן למורה או להוריד הכל כקובץ מרוכז לסיום השיעורים.</p>
+                </div>
+                <button onclick="downloadPortfolio()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-xl transition flex items-center gap-2 shadow-md">
+                    <i class="fa-solid fa-file-arrow-down"></i>
+                    ייצוא והורדת התיקייה האישית
+                </button>
+            </div>
+
+            <!-- Portfolio Contents -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="portfolio-container">
+                <!-- Portfolio Cards -->
+            </div>
+
+            <!-- Empty state fallback -->
+            <div id="portfolio-empty" class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-12 text-center space-y-3">
+                <div class="text-4xl text-slate-300"><i class="fa-solid fa-box-open"></i></div>
+                <h3 class="font-bold text-slate-700">התיקייה שלכם עדיין ריקה!</h3>
+                <p class="text-sm text-slate-500 max-w-md mx-auto">עבדו על שיעורי הלמידה, מלאו את השאלות ולחצו על כפתור <strong>"שמירה בתיקייה אישית שלי"</strong> בתחתית כל שיעור כדי לראות את התוצרים כאן.</p>
+            </div>
+        </section>
+
+
+        <!-- ==================== TAB: AI ASSISTANT HUB ==================== -->
+        <section id="tab-ai-hub" class="tab-content hidden space-y-6">
+            <div class="bg-gradient-to-r from-brand-900 to-indigo-900 text-white rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="bg-brand-500/20 p-3 rounded-full text-brand-300 text-3xl"><i class="fa-solid fa-robot"></i></div>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-black">עוזר ה-AI הרשתי: Gemini Assistant</h2>
+                        <p class="text-xs md:text-sm text-brand-200 mt-1">שאלו שאלות, בררו מונחים לא מובנים ברשתות כמו "כתובות MAC", "פרוטוקול TCP", "חומת אש" וקבלו עזרה מיידית, פשוטה ומעמיקה.</p>
+                    </div>
+                </div>
+                <div class="text-xs text-brand-300 bg-brand-950/40 px-3 py-1.5 rounded-lg border border-white/10">
+                    מודל נוכחי: <code class="text-brand-200 font-mono">gemini-2.5-flash</code>
+                </div>
+            </div>
+
+            <!-- AI Chat Interface -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 min-h-[500px]">
+                
+                <!-- Quick Prompts / Suggestions -->
+                <div class="lg:col-span-1 bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-3">
+                    <h4 class="font-bold text-slate-700 text-sm mb-2 border-b pb-2"><i class="fa-solid fa-lightbulb ml-1 text-yellow-500"></i> שאלות לדוגמה:</h4>
+                    <button onclick="sendQuickPrompt('היי, תוכל להסביר לי מה ההבדל בין כתובת IP לכתובת MAC בעזרת אנלוגיה משעשעת?')" class="text-xs text-right p-3 rounded-lg bg-slate-50 hover:bg-brand-50 hover:text-brand-700 border text-slate-600 transition">
+                        🏢 ההבדל בין IP ל-MAC
+                    </button>
+                    <button onclick="sendQuickPrompt('מה קורה מאחורי הקלעים מרגע שאני לוחץ אנטר על כתובת של אתר בדפדפן ועד שהאתר עולה?')" class="text-xs text-right p-3 rounded-lg bg-slate-50 hover:bg-brand-50 hover:text-brand-700 border text-slate-600 transition">
+                        🌐 שלבי טעינת אתר אינטרנט
+                    </button>
+                    <button onclick="sendQuickPrompt('תן לי רעיון מקורי למכשיר IoT (בית חכם) מצחיק אך שימושי והסבר איך הוא יתקשר ברשת')" class="text-xs text-right p-3 rounded-lg bg-slate-50 hover:bg-brand-50 hover:text-brand-700 border text-slate-600 transition">
+                        💡 המצאת מכשיר IoT מקורי
+                    </button>
+                    <button onclick="sendQuickPrompt('איך פרוטוקול TCP מוודא שאף חבילת מידע לא הלכה לאיבוד בדרך?')" class="text-xs text-right p-3 rounded-lg bg-slate-50 hover:bg-brand-50 hover:text-brand-700 border text-slate-600 transition">
+                        📦 איך TCP מונע אובדן חבילות?
+                    </button>
+                </div>
+
+                <!-- Live Chat Window -->
+                <div class="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col overflow-hidden">
+                    <div id="ai-chat-messages" class="flex-grow p-4 md:p-6 space-y-4 overflow-y-auto max-h-[400px] min-h-[350px]">
+                        <!-- System message greeting -->
+                        <div class="flex items-start gap-3">
+                            <div class="bg-brand-600 text-white w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm"><i class="fa-solid fa-robot text-sm"></i></div>
+                            <div class="bg-slate-100 text-slate-800 p-3.5 rounded-2xl rounded-tr-none text-sm max-w-[85%] leading-relaxed">
+                                <p class="font-bold text-xs text-brand-700 mb-1">מדריך הרשת החכם:</p>
+                                שלום לכם, מהנדסי הרשת הצעירים! 🛰️ אני כאן כדי לעזור לכם לחקור את עולם הסייבר והאינטרנט. שאלו אותי כל שאלה, בקשו רעיונות למשימות או עזרה בפתרון השאלות של השיעורים. מה תרצו לדעת?
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input message box -->
+                    <div class="p-4 border-t bg-slate-50 flex gap-2">
+                        <input type="text" id="ai-user-input" onkeypress="handleChatEnter(event)" placeholder="שאלו את ה-AI על רשתות תקשורת, כתובות, DNS או הגנה בסייבר..." class="flex-grow p-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm">
+                        <button onclick="sendAiMessage()" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl font-bold transition flex items-center gap-2 text-sm shadow">
+                            <span>שלח</span>
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ==================== TAB: TEACHER'S GUIDE ==================== -->
+        <section id="tab-teacher-guide" class="tab-content hidden bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="border-b border-slate-100 pb-5">
+                <h2 class="text-3xl font-black text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap text-emerald-600"></i>
+                    מדריך פדגוגי מפורט למורה (כיתה ט')
+                </h2>
+                <p class="text-sm text-slate-500 mt-1">מערך שיעורים מתקדם וחדשני המשלב את מיומנויות המאה ה-21, בינה מלאכותית (Generative AI) ועבודה שיתופית פעילה.</p>
+            </div>
+
+            <!-- Quick stats of the plan -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100 text-center">
+                    <span class="text-xs text-emerald-800 block">אורך התוכנית</span>
+                    <strong class="text-lg text-emerald-950 font-bold">4 שיעורים כפולים</strong>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
+                    <span class="text-xs text-slate-500 block">קהל יעד</span>
+                    <strong class="text-lg text-slate-800 font-bold">חטיבת ביניים (כיתה ט')</strong>
+                </div>
+                <div class="bg-brand-50/50 p-4 rounded-xl border border-brand-100 text-center">
+                    <span class="text-xs text-brand-800 block">ערוצי למידה</span>
+                    <strong class="text-lg text-brand-950 font-bold">עצמי, קבוצתי, AI</strong>
+                </div>
+                <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100 text-center">
+                    <span class="text-xs text-amber-800 block">סוג הערכה</span>
+                    <strong class="text-lg text-amber-950 font-bold">מעצבת, עמיתים ופורטפוליו</strong>
+                </div>
+            </div>
+
+            <!-- Lesson by Lesson Breakdown -->
+            <div class="space-y-6">
+                
+                <!-- Lesson 1 -->
+                <div class="border-l-4 border-brand-500 pl-0 pr-4 py-1 space-y-2">
+                    <h3 class="font-bold text-lg text-brand-900">שיעור 1: כתובות IP וזהות ברשת (90 דק׳)</h3>
+                    <p class="text-sm text-slate-600"><strong class="text-slate-800">רציונל ופתיחה:</strong> התלמיד מבין את הצורך בכתובת פיזית ווירטואלית. הוא לומד על השילוב של חומרה ותוכנה המגדירים את זהות המכשיר ברשת.</p>
+                    <ul class="list-disc list-inside text-xs text-slate-500 space-y-1 mr-4">
+                        <li><strong>משימת חקר:</strong> חיפוש ה-IP הציבורי של המכשיר בגוגל והבנת ההבדל בין רשת פנימית לחיצונית.</li>
+                        <li><strong>שילוב AI:</strong> שאלת חקר ממוקדת על ההבדלים בין IPv4 ל-IPv6 והמעבר הבלתי נמנע ביניהם.</li>
+                        <li><strong>ביטוי עצמי:</strong> עיצוב כרטיס זהות רשתי המבטא את האופי של התלמיד דרך רכיבי רשת שונים.</li>
+                    </ul>
+                </div>
+
+                <!-- Lesson 2 -->
+                <div class="border-l-4 border-brand-500 pl-0 pr-4 py-1 space-y-2">
+                    <h3 class="font-bold text-lg text-brand-900">שיעור 2: תנועת חבילות וניתוב ברשת (90 דק׳)</h3>
+                    <p class="text-sm text-slate-600"><strong class="text-slate-800">רציונל ופתיחה:</strong> מעבר ממושג הסטטי של "מי אני" למושג הדינמי של "איך המידע זורם". למידה על חבילות, נתבים ואלגוריתמי ניתוב.</p>
+                    <ul class="list-disc list-inside text-xs text-slate-500 space-y-1 mr-4">
+                        <li><strong>משימת חקר:</strong> הבנת המבנה של Packet Header ומהם הנתונים המועברים בכל חבילה.</li>
+                        <li><strong>למידת עמיתים (הצלבה):</strong> דיאלוג ועבודה זוגית להגדרת תפקידו של הנתב, תוך הצלבת המידע שהם השיגו באופן עצמאי.</li>
+                        <li><strong>ביטוי עצמי:</strong> כתיבת דיאלוג קומיקס הומוריסטי ויצירתי הממחיש האנשה של חבילות מידע שעוברות ברשת העמוסה.</li>
+                    </ul>
+                </div>
+
+                <!-- Lesson 3 -->
+                <div class="border-l-4 border-brand-500 pl-0 pr-4 py-1 space-y-2">
+                    <h3 class="font-bold text-lg text-brand-900">שיעור 3: שרתי DNS והיררכיית הרשת (90 דק׳)</h3>
+                    <p class="text-sm text-slate-600"><strong class="text-slate-800">רציונל ופתיחה:</strong> קישור בין כתובות ה-IP המספריות לבין השפה האנושית הנוחה (דומיינים). הבנת ההיררכיה ופתרון הבעיות ברמה העולמית.</p>
+                    <ul class="list-disc list-inside text-xs text-slate-500 space-y-1 mr-4">
+                        <li><strong>משימת חקר:</strong> גילוי שרתי השורש העולמיים ומבנה שמות המתחם.</li>
+                        <li><strong>שילוב AI & סייבר:</strong> חקירת המושג "DNS Poisoning" (הרעלת DNS) בעזרת עוזר ה-AI והבנת איומי סייבר.</li>
+                        <li><strong>שיתופיות:</strong> המצאת סיומת אתרים (Top Level Domain) חדשה ומקורית בשיתוף פעולה כיתתי.</li>
+                    </ul>
+                </div>
+
+                <!-- Lesson 4 -->
+                <div class="border-l-4 border-emerald-500 pl-0 pr-4 py-1 space-y-2">
+                    <h3 class="font-bold text-lg text-emerald-900">שיעור 4: פרויקט מסכם - רשת הבית החכם שלי (IoT) (180 דק׳)</h3>
+                    <p class="text-sm text-slate-600"><strong class="text-slate-800">רציונל ופתיחה:</strong> אינטגרציה מעשית של כל החומר. התלמידים הופכים למתכנני מערכות בית חכם ומגינים עליו מפני מתקפות סייבר חיצוניות.</p>
+                    <ul class="list-disc list-inside text-xs text-slate-500 space-y-1 mr-4">
+                        <li><strong>משימת חקר ותכנון:</strong> הגדרת ארכיטקטורה מלאה של 4 מכשירי IoT כולל הגדרת כתובות IP פנימיות מתאימות.</li>
+                        <li><strong>שימוש ב-AI להגנת סייבר:</strong> איתור חולשות אבטחה של מכשירים חכמים וכתיבת מדריך הגנה.</li>
+                        <li><strong>למידת עמיתים בלוח הכיתתי:</strong> העלאת פרויקט הבית החכם המלא לפדלט הכיתתי, הגשת הערות בונות ללפחות שני חברים מהכיתה.</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Pedagogy Advice and Tips for the Teacher -->
+            <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 mt-6 space-y-3">
+                <h4 class="font-bold text-slate-800 text-sm"><i class="fa-solid fa-chalkboard-user ml-1 text-emerald-600"></i> טיפים להפעלה יעילה בכיתה:</h4>
+                <ol class="list-decimal list-inside text-xs text-slate-600 space-y-2 mr-4">
+                    <li><strong>עידוד השימוש בצ'אט הבוט:</strong> מומלץ להנחות את התלמידים להשתמש בצ'אט לא רק כדי לקבל תשובות מוכנות, אלא כדי לשאול "מדוע" ו"איך זה עובד".</li>
+                    <li><strong>שמירה תקופתית:</strong> הזכירו לתלמידים ללחוץ על "שמירה בתיקייה" כדי שהעבודה שלהם לא תלך לאיבוד בזמן מעבר בין שיעורים.</li>
+                    <li><strong>סבב הערכת עמיתים:</strong> ב-30 הדקות האחרונות של שיעור 4, תנו לתלמידים משימה עצמאית לעבור על לוח הפדלט הכיתתי, להגיב הערה בונה אחת ולתת לפחות 3 לבבות לפרויקטים יצירתיים אחרים.</li>
+                </ol>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
+            <p>© 2026 מערכת למידה אינטראקטיבית - רשתות תקשורת וסייבר לחטיבת ביניים. נבנה עבור כיתות ט'.</p>
+            <div class="flex items-center gap-4">
+                <span class="hover:text-white transition cursor-pointer">תנאי שימוש</span>
+                <span>•</span>
+                <span class="hover:text-white transition cursor-pointer">מדיניות פרטיות</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT - LOGIC, STATE & GEMINI API -->
+    <script>
+        // State variables
+        let studentName = localStorage.getItem('networkStudentName') || 'תלמיד/ה יצירתי/ת';
+        let portfolio = JSON.parse(localStorage.getItem('networkPortfolio')) || {};
+        let currentTab = 'lessons';
+        let currentLesson = 1;
+        let selectedPostColor = 'bg-yellow-100 border-yellow-200';
+        
+        // Initial Mock Database for Padlet to simulate a collaborative active classroom
+        const defaultMockPosts = [
+            {
+                id: 'mock-1',
+                author: 'ליטל לוי',
+                lesson: 'lesson1',
+                title: 'כרטיס הרשת שלי 🛸',
+                content: 'שם קוד: CyberEagle! הרכיב שמתאר אותי הוא נתב (Router) כי אני תמיד עוזרת לחברות בקבוצה להבין אחת את השנייה ומחברת בין כולם בכיתה.',
+                color: 'bg-pink-100 border-pink-200',
+                likes: 8,
+                comments: [
+                    { author: 'נועם', text: 'מגניב ממש! אהבתי את ההקבלה לנתב!' }
+                ],
+                timestamp: 'לפני 10 דקות'
+            },
+            {
+                id: 'mock-2',
+                author: 'יונתן כהן',
+                lesson: 'lesson2',
+                title: 'החבילה המעופפת',
+                content: 'הקומיקס שלי: חבילה א\' מתלוננת שאין לה מקום בפתיח (Header) ושכחו להוסיף את ה-IP של היעד. חבילה ב\' מרגיעה אותה ואומרת: "אל תדאגי, ה-TCP יתקן אותנו בדרך!"',
+                color: 'bg-blue-100 border-blue-200',
+                likes: 12,
+                comments: [],
+                timestamp: 'לפני חצי שעה'
+            },
+            {
+                id: 'mock-3',
+                author: 'גל שירה',
+                lesson: 'lesson3',
+                title: 'סיומת חדשה ומגניבה: pixel.',
+                content: 'המצאנו סיומת .pixel המיועדת רק לאמנים דיגיטליים ויוצרי תלת מימד. האתר הראשון שהקמנו הוא: www.portfolio.pixel המציג גלריות מדהימות.',
+                color: 'bg-emerald-100 border-emerald-200',
+                likes: 5,
+                comments: [
+                    { author: 'תומר', text: 'רעיון מושלם, הייתי נרשם לאתר כזה אתמול!' }
+                ],
+                timestamp: 'לפני שעה'
+            }
+        ];
+
+        let padletPosts = JSON.parse(localStorage.getItem('networkPadletPosts')) || defaultMockPosts;
+
+        // On Load initialization
+        window.onload = function() {
+            document.getElementById('studentNameDisplay').textContent = studentName;
+            updatePortfolioCount();
+            renderPadlet();
+            renderPortfolio();
+        }
+
+        // Change Student Name
+        function changeStudentName() {
+            const newName = prompt("מה שמך?", studentName);
+            if (newName && newName.trim() !== "") {
+                studentName = newName.trim();
+                localStorage.setItem('networkStudentName', studentName);
+                document.getElementById('studentNameDisplay').textContent = studentName;
+                showToast("השם עודכן בהצלחה!", "fa-user-astronaut");
+            }
+        }
+
+        // Tab Switching
+        function switchTab(tabId) {
+            currentTab = tabId;
+            
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('block'));
+            
+            // Show active tab
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabId}`).classList.add('block');
+            
+            // Reset active button styling
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('border-brand-500', 'text-brand-100');
+                btn.classList.add('border-transparent', 'text-slate-300');
+            });
+            
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('border-transparent', 'text-slate-300');
+                activeBtn.classList.add('border-brand-500', 'text-brand-100');
+            }
+        }
+
+        // Lesson Navigation (Sidebar Map)
+        function selectLesson(num) {
+            currentLesson = num;
+            
+            // Hide all lessons
+            document.querySelectorAll('.lesson-card').forEach(card => card.classList.add('hidden'));
+            // Show current lesson
+            document.getElementById(`lesson-${num}`).classList.remove('hidden');
+            
+            // Sidebar styling update
+            document.querySelectorAll('.lesson-sidebar-btn').forEach(btn => {
+                btn.classList.remove('border-brand-500', 'bg-brand-50', 'text-brand-700', 'font-bold');
+                btn.classList.add('border-transparent', 'text-slate-600', 'font-medium');
+            });
+            
+            const targetBtn = document.getElementById(`side-l${num}`);
+            if (targetBtn) {
+                targetBtn.classList.remove('border-transparent', 'text-slate-600', 'font-medium');
+                targetBtn.classList.add('border-brand-500', 'bg-brand-50', 'text-brand-700', 'font-bold');
+            }
+        }
+
+        // Dynamic Toast notification helper
+        function showToast(message, iconClass = "fa-check") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+            
+            toastMsg.textContent = message;
+            toastIcon.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+            
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+
+        // ==================== STATE SAVING TO PORTFOLIO ====================
+
+        function saveLesson1ToPortfolio() {
+            const ip = document.getElementById('l1-ip').value;
+            const location = document.getElementById('l1-location').value;
+            const aiAnswer = document.getElementById('l1-ai-answer').value;
+            const codename = document.getElementById('l1-codename').value;
+            const character = document.getElementById('l1-character').value;
+
+            if (!ip || !aiAnswer || !codename) {
+                showToast("אנא מלאו את ה-IP, תשובת ה-AI ושם הקוד שלכם", "fa-circle-exclamation");
+                return;
+            }
+
+            portfolio['lesson1'] = {
+                title: "שיעור 1: עולם ה-IP והזהות שלי",
+                ip: ip,
+                location: location,
+                aiAnswer: aiAnswer,
+                codename: codename,
+                character: character,
+                timestamp: new Date().toLocaleString('he-IL')
+            };
+
+            saveAndSyncPortfolio();
+        }
+
+        function saveLesson2ToPortfolio() {
+            const header = document.getElementById('l2-header').value;
+            const payload = document.getElementById('l2-payload').value;
+            const partner = document.getElementById('l2-partner').value;
+            const routerDef = document.getElementById('l2-router-def').value;
+            const comic = document.getElementById('l2-comic').value;
+
+            if (!header || !routerDef || !comic) {
+                showToast("מלאו את תוכן החבילה, ההסבר על הנתב והקומיקס כדי לשמור!", "fa-circle-exclamation");
+                return;
+            }
+
+            portfolio['lesson2'] = {
+                title: "שיעור 2: מסע החבילות והנתבים",
+                header: header,
+                payload: payload,
+                partner: partner,
+                routerDef: routerDef,
+                comic: comic,
+                timestamp: new Date().toLocaleString('he-IL')
+            };
+
+            saveAndSyncPortfolio();
+        }
+
+        function saveLesson3ToPortfolio() {
+            const rootDef = document.getElementById('l3-root-def').value;
+            const rootCount = document.getElementById('l3-root-count').value;
+            const dnsPoisoning = document.getElementById('l3-dns-poison').value;
+            const tld = document.getElementById('l3-tld').value;
+            const tldDesc = document.getElementById('l3-tld-desc').value;
+
+            if (!rootDef || !dnsPoisoning || !tld) {
+                showToast("מלאו את הגדרת שרת השורש, הרעלת DNS והסיומת שהמצאתם!", "fa-circle-exclamation");
+                return;
+            }
+
+            portfolio['lesson3'] = {
+                title: "שיעור 3: ספר הטלפונים של הרשת (DNS)",
+                rootDef: rootDef,
+                rootCount: rootCount,
+                dnsPoisoning: dnsPoisoning,
+                tld: tld,
+                tldDesc: tldDesc,
+                timestamp: new Date().toLocaleString('he-IL')
+            };
+
+            saveAndSyncPortfolio();
+        }
+
+        function saveLesson4ToPortfolio() {
+            const dev1Name = document.getElementById('l4-dev1-name').value;
+            const dev1Ip = document.getElementById('l4-dev1-ip').value;
+            const dev1Data = document.getElementById('l4-dev1-data').value;
+            const dev2Name = document.getElementById('l4-dev2-name').value;
+            const dev2Ip = document.getElementById('l4-dev2-ip').value;
+            const dev2Data = document.getElementById('l4-dev2-data').value;
+            const dev3Name = document.getElementById('l4-dev3-name').value;
+            const dev3Ip = document.getElementById('l4-dev3-ip').value;
+            const dev3Data = document.getElementById('l4-dev3-data').value;
+            const dev4Name = document.getElementById('l4-dev4-name').value;
+            const dev4Ip = document.getElementById('l4-dev4-ip').value;
+            const dev4Data = document.getElementById('l4-dev4-data').value;
+            const security = document.getElementById('l4-security').value;
+
+            if (!dev1Name || !dev4Name || !security) {
+                showToast("אנא הגדירו את המכשיר הראשון, המכשיר היצירתי שלכם וחוקי האבטחה!", "fa-circle-exclamation");
+                return;
+            }
+
+            portfolio['lesson4'] = {
+                title: "שיעור 4: רשת הבית החכם שלי (IoT)",
+                devices: [
+                    { name: dev1Name, ip: dev1Ip, data: dev1Data },
+                    { name: dev2Name, ip: dev2Ip, data: dev2Data },
+                    { name: dev3Name, ip: dev3Ip, data: dev3Data },
+                    { name: dev4Name, ip: dev4Ip, data: dev4Data }
+                ],
+                security: security,
+                timestamp: new Date().toLocaleString('he-IL')
+            };
+
+            saveAndSyncPortfolio();
+        }
+
+        function saveAndSyncPortfolio() {
+            localStorage.setItem('networkPortfolio', JSON.stringify(portfolio));
+            updatePortfolioCount();
+            renderPortfolio();
+            showToast("תוצר נשמר בהצלחה בתיקייה האישית שלך!", "fa-folder-closed");
+        }
+
+        function updatePortfolioCount() {
+            const count = Object.keys(portfolio).length;
+            document.getElementById('portfolioCount').textContent = count;
+        }
+
+        // Render Portfolio Page
+        function renderPortfolio() {
+            const container = document.getElementById('portfolio-container');
+            const emptyFallback = document.getElementById('portfolio-empty');
+            
+            container.innerHTML = "";
+            
+            const keys = Object.keys(portfolio);
+            if (keys.length === 0) {
+                emptyFallback.classList.remove('hidden');
+                return;
+            }
+            
+            emptyFallback.classList.add('hidden');
+            
+            keys.forEach(key => {
+                const item = portfolio[key];
+                let contentHTML = "";
+                
+                if (key === 'lesson1') {
+                    contentHTML = `
+                        <div class="space-y-1 text-xs">
+                            <p><strong>IP ציבורי שנמצא:</strong> ${item.ip} (${item.location || 'לא צוין מיקום'})</p>
+                            <p><strong>חקר IPv4 מול IPv6:</strong> ${item.aiAnswer}</p>
+                            <p><strong>שם קוד רשתי:</strong> ${item.codename}</p>
+                            <p><strong>רכיב רשת המייצג אותי:</strong> ${item.character}</p>
+                        </div>
+                    `;
+                } else if (key === 'lesson2') {
+                    contentHTML = `
+                        <div class="space-y-1 text-xs">
+                            <p><strong>מבנה חבילה (פתיח):</strong> ${item.header}</p>
+                            <p><strong>מטען (Payload):</strong> ${item.payload}</p>
+                            <p><strong>שותף ללמידה:</strong> ${item.partner}</p>
+                            <p><strong>תפקיד הנתב:</strong> ${item.routerDef}</p>
+                            <div class="bg-indigo-50 p-2 rounded mt-2 border border-indigo-100 italic">
+                                <strong>הקומיקס שלנו:</strong> "${item.comic}"
+                            </div>
+                        </div>
+                    `;
+                } else if (key === 'lesson3') {
+                    contentHTML = `
+                        <div class="space-y-1 text-xs">
+                            <p><strong>שרת DNS שורש:</strong> ${item.rootDef} (מספר שרתים בעולם: ${item.rootCount})</p>
+                            <p><strong>הרעלת מטמון DNS:</strong> ${item.dnsPoisoning}</p>
+                            <p><strong>הסיומת שהמצאנו:</strong> <span class="bg-emerald-100 text-emerald-800 px-1 py-0.5 rounded font-mono font-bold">${item.tld}</span></p>
+                            <p><strong>על הסיומת:</strong> ${item.tldDesc}</p>
+                        </div>
+                    `;
+                } else if (key === 'lesson4') {
+                    let devicesList = item.devices.map(d => d.name ? `<li>🏠 ${d.name} (IP: ${d.ip}) - מידע: ${d.data}</li>` : '').join('');
+                    contentHTML = `
+                        <div class="space-y-1 text-xs">
+                            <p class="font-bold">רשימת מכשירים חכמים:</p>
+                            <ul class="list-disc list-inside mr-2 text-slate-600 mb-2">${devicesList}</ul>
+                            <p><strong>חוקי אבטחה וסייבר:</strong> ${item.security}</p>
+                        </div>
+                    `;
+                }
+
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3 relative overflow-hidden";
+                card.innerHTML = `
+                    <div class="absolute top-0 right-0 left-0 h-1.5 bg-gradient-to-r from-brand-500 to-indigo-600"></div>
+                    <div class="flex justify-between items-start pt-2">
+                        <h4 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-invoice text-brand-500"></i>
+                            ${item.title}
+                        </h4>
+                        <span class="text-[10px] text-slate-400 font-mono">${item.timestamp}</span>
+                    </div>
+                    <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-100 text-slate-700">
+                        ${contentHTML}
+                    </div>
+                    <div class="flex justify-end gap-2">
+                        <button onclick="removePortfolioItem('${key}')" class="text-xs text-rose-600 hover:text-rose-800 flex items-center gap-1">
+                            <i class="fa-regular fa-trash-can"></i>
+                            מחיקה
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Delete from Portfolio
+        function removePortfolioItem(key) {
+            if (confirm("האם למחוק תוצר זה מהתיקייה האישית?")) {
+                delete portfolio[key];
+                saveAndSyncPortfolio();
+            }
+        }
+
+        // Download entire portfolio as a text file
+        function downloadPortfolio() {
+            if (Object.keys(portfolio).length === 0) {
+                alert("אין עדיין תוצרים להורדה בתיקייה האישית שלך!");
+                return;
+            }
+            
+            let output = `=========================================\n`;
+            output += `תיקיית עבודות דיגיטלית ברשתות תקשורת\n`;
+            output += `שם התלמיד/ה: ${studentName}\n`;
+            output += `תאריך ייצוא: ${new Date().toLocaleString('he-IL')}\n`;
+            output += `=========================================\n\n`;
+
+            Object.keys(portfolio).forEach(key => {
+                const item = portfolio[key];
+                output += `-----------------------------------------\n`;
+                output += `📌 ${item.title} (נשמר ב: ${item.timestamp})\n`;
+                output += `-----------------------------------------\n`;
+                
+                if (key === 'lesson1') {
+                    output += `• כתובת IP ציבורית: ${item.ip}\n• מיקום משוער: ${item.location}\n• תשובת AI על IP: ${item.aiAnswer}\n• שם קוד: ${item.codename}\n• רכיב המאפיין אותי: ${item.character}\n`;
+                } else if (key === 'lesson2') {
+                    output += `• מבנה חבילה: ${item.header}\n• מטען: ${item.payload}\n• שותף: ${item.partner}\n• הגדרת נתב: ${item.routerDef}\n• דיאלוג קומיקס: ${item.comic}\n`;
+                } else if (key === 'lesson3') {
+                    output += `• שרת DNS שורש: ${item.rootDef}\n• כמות שרתי שורש: ${item.rootCount}\n• הרעלת DNS: ${item.dnsPoisoning}\n• סיומת ייחודית: ${item.tld}\n• הסבר סיומת: ${item.tldDesc}\n`;
+                } else if (key === 'lesson4') {
+                    output += `• מכשירי IoT בבית החכם:\n`;
+                    item.devices.forEach((d, i) => {
+                        if (d.name) output += `  ${i+1}. ${d.name} | IP: ${d.ip} | מידע: ${d.data}\n`;
+                    });
+                    output += `• אבטחת רשת בית חכם: ${item.security}\n`;
+                }
+                output += `\n\n`;
+            });
+
+            const blob = new Blob([output], { type: "text/plain;charset=utf-8" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `תיקיית_רשתות_תקשורת_${studentName.replace(/\s+/g, '_')}.txt`;
+            link.click();
+            showToast("התיקייה הורדה למחשב שלך בהצלחה!", "fa-file-arrow-down");
+        }
+
+
+        // ==================== SHARING TO INTEGRATED PADLET BOARD ====================
+
+        function shareLesson1ToPadlet() {
+            const codename = document.getElementById('l1-codename').value || studentName;
+            const character = document.getElementById('l1-character').value;
+            const aiAnswer = document.getElementById('l1-ai-answer').value;
+
+            if (!character || !aiAnswer) {
+                showToast("מלאו את המשימות בשיעור 1 לפני השיתוף!", "fa-circle-exclamation");
+                return;
+            }
+
+            const newPost = {
+                id: 'post-' + Date.now(),
+                author: studentName,
+                lesson: 'lesson1',
+                title: `כרטיס הרשת של ${codename} 🛡️`,
+                content: `האופי הרשתי שלי הוא כמו: ${character}. \n\nמה ההבדל בין IPv4 ל-IPv6? \n${aiAnswer}`,
+                color: 'bg-yellow-100 border-yellow-200',
+                likes: 0,
+                comments: [],
+                timestamp: 'הרגע'
+            };
+
+            padletPosts.unshift(newPost);
+            saveAndRenderPadlet();
+            switchTab('padlet');
+            showToast("התוצר פורסם בלוח הכיתתי בהצלחה!", "fa-chalkboard");
+        }
+
+        function shareLesson2ToPadlet() {
+            const partner = document.getElementById('l2-partner').value;
+            const routerDef = document.getElementById('l2-router-def').value;
+            const comic = document.getElementById('l2-comic').value;
+
+            if (!routerDef || !comic) {
+                showToast("מלאו את תוכן שיעור 2 לפני השיתוף בלוח הכיתתי", "fa-circle-exclamation");
+                return;
+            }
+
+            const newPost = {
+                id: 'post-' + Date.now(),
+                author: studentName,
+                lesson: 'lesson2',
+                title: `קומיקס החבילות של ${studentName} ו-${partner || 'חבר'} 📦`,
+                content: `תפקיד הנתב עבורנו: ${routerDef}\n\nהקומיקס ההורס שלנו:\n"${comic}"`,
+                color: 'bg-blue-100 border-blue-200',
+                likes: 0,
+                comments: [],
+                timestamp: 'הרגע'
+            };
+
+            padletPosts.unshift(newPost);
+            saveAndRenderPadlet();
+            switchTab('padlet');
+            showToast("התוצר פורסם בלוח הכיתתי בהצלחה!", "fa-chalkboard");
+        }
+
+        function shareLesson3ToPadlet() {
+            const tld = document.getElementById('l3-tld').value;
+            const tldDesc = document.getElementById('l3-tld-desc').value;
+
+            if (!tld || !tldDesc) {
+                showToast("מלאו את שם הסיומת והתיאור שלה לפני השיתוף!", "fa-circle-exclamation");
+                return;
+            }
+
+            const newPost = {
+                id: 'post-' + Date.now(),
+                author: studentName,
+                lesson: 'lesson3',
+                title: `סיומת אינטרנט מהעתיד: ${tld}`,
+                content: `הגנו על הרשת והמצאנו סיומת חדשה!\nסיומת: ${tld}\nשימוש ותיאור: ${tldDesc}`,
+                color: 'bg-emerald-100 border-emerald-200',
+                likes: 0,
+                comments: [],
+                timestamp: 'הרגע'
+            };
+
+            padletPosts.unshift(newPost);
+            saveAndRenderPadlet();
+            switchTab('padlet');
+            showToast("התוצר פורסם בלוח הכיתתי בהצלחה!", "fa-chalkboard");
+        }
+
+        function shareLesson4ToPadlet() {
+            const dev1 = document.getElementById('l4-dev1-name').value;
+            const dev4 = document.getElementById('l4-dev4-name').value;
+            const security = document.getElementById('l4-security').value;
+
+            if (!dev1 || !dev4) {
+                showToast("השלימו את תכנון המכשירים בשיעור 4 לפני פרסום הבית החכם!", "fa-circle-exclamation");
+                return;
+            }
+
+            const newPost = {
+                id: 'post-' + Date.now(),
+                author: studentName,
+                lesson: 'lesson4',
+                title: `הבית החכם והבטוח של ${studentName} 🏠`,
+                content: `חיברנו לרשת את: ${dev1} וההמצאה המשוגעת שלנו היא: ${dev4}!\n\n3 כללי אבטחה לבית החכם:\n${security}`,
+                color: 'bg-pink-100 border-pink-200',
+                likes: 0,
+                comments: [],
+                timestamp: 'הרגע'
+            };
+
+            padletPosts.unshift(newPost);
+            saveAndRenderPadlet();
+            switchTab('padlet');
+            showToast("פרויקט בית חכם עלה ללוח!", "fa-chalkboard");
+        }
+
+        // Save padlet array to local storage and refresh UI
+        function saveAndRenderPadlet() {
+            localStorage.setItem('networkPadletPosts', JSON.stringify(padletPosts));
+            renderPadlet();
+        }
+
+        // Render Padlet Posts Grid
+        function renderPadlet(filter = 'all') {
+            const grid = document.getElementById('padlet-grid');
+            grid.innerHTML = "";
+
+            const filtered = padletPosts.filter(p => filter === 'all' || p.lesson === filter);
+
+            filtered.forEach(post => {
+                const postCard = document.createElement('div');
+                postCard.className = `${post.color} rounded-2xl p-5 border shadow-sm relative space-y-3 flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-md duration-200`;
+                
+                let commentsHTML = post.comments.map(c => `
+                    <div class="bg-white/60 p-2 rounded-lg text-xs mt-1">
+                        <strong class="text-slate-800">${c.author}:</strong> ${c.text}
+                    </div>
+                `).join('');
+
+                postCard.innerHTML = `
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-start">
+                            <span class="text-[10px] bg-slate-900/10 px-2 py-0.5 rounded-full font-bold uppercase text-slate-800">
+                                ${post.lesson === 'lesson1' ? 'שיעור 1' : post.lesson === 'lesson2' ? 'שיעור 2' : post.lesson === 'lesson3' ? 'שיעור 3' : 'פרויקט מסכם'}
+                            </span>
+                            <span class="text-[10px] text-slate-500 font-medium">${post.timestamp}</span>
+                        </div>
+                        <h4 class="font-black text-slate-900 text-base leading-tight">${post.title}</h4>
+                        <p class="text-xs text-slate-800 whitespace-pre-line leading-relaxed">${post.content}</p>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-900/10 space-y-3 mt-4">
+                        <!-- Likes and comment actions -->
+                        <div class="flex justify-between items-center">
+                            <button onclick="likePost('${post.id}')" class="flex items-center gap-1.5 text-xs text-slate-700 hover:text-red-500 transition font-bold">
+                                <i class="fa-solid fa-heart ${post.likes > 0 ? 'text-red-500' : 'text-slate-400'}"></i>
+                                <span>${post.likes} לבבות</span>
+                            </button>
+                            <span class="text-[11px] text-slate-600">מאת: <strong class="text-slate-900">${post.author}</strong></span>
+                        </div>
+
+                        <!-- Comments Section -->
+                        <div class="space-y-1">
+                            ${commentsHTML}
+                        </div>
+
+                        <!-- Add comment -->
+                        <div class="flex gap-1 mt-1.5">
+                            <input type="text" id="comment-input-${post.id}" placeholder="הוספת הערה בונה לעמית..." class="flex-grow p-1 px-2 border rounded-md text-[11px] focus:outline-none focus:ring-1 focus:ring-brand-500">
+                            <button onclick="addComment('${post.id}')" class="bg-slate-900 hover:bg-slate-800 text-white p-1 px-2.5 rounded text-[10px] font-bold">הוספה</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(postCard);
+            });
+        }
+
+        // Filter Padlet Posts
+        function filterPadlet(lessonFilter) {
+            document.querySelectorAll('.padlet-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-900', 'text-white');
+                btn.classList.add('bg-white', 'text-slate-600', 'hover:bg-slate-100', 'border');
+            });
+            event.target.classList.remove('bg-white', 'text-slate-600', 'hover:bg-slate-100', 'border');
+            event.target.classList.add('bg-slate-900', 'text-white');
+
+            renderPadlet(lessonFilter);
+        }
+
+        // Like a Post
+        function likePost(postId) {
+            const post = padletPosts.find(p => p.id === postId);
+            if (post) {
+                post.likes += 1;
+                saveAndSyncPadlet();
+            }
+        }
+
+        // Add Comment to Post (Peer learning loop)
+        function addComment(postId) {
+            const input = document.getElementById(`comment-input-${postId}`);
+            const text = input.value.trim();
+            if (!text) return;
+
+            const post = padletPosts.find(p => p.id === postId);
+            if (post) {
+                post.comments.push({
+                    author: studentName,
+                    text: text
+                });
+                input.value = "";
+                saveAndSyncPadlet();
+                showToast("הערת העמית שלך פורסמה!", "fa-comment-dots");
+            }
+        }
+
+        function saveAndSyncPadlet() {
+            localStorage.setItem('networkPadletPosts', JSON.stringify(padletPosts));
+            renderPadlet();
+        }
+
+        // Post creation Modal functions
+        function openNewPostModal() {
+            document.getElementById('modal-author').value = studentName;
+            document.getElementById('post-modal').classList.remove('hidden');
+        }
+
+        function closeNewPostModal() {
+            document.getElementById('post-modal').classList.add('hidden');
+        }
+
+        function selectColor(colorClass) {
+            selectedPostColor = colorClass;
+            document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('ring-2', 'ring-brand-500'));
+            event.target.classList.add('ring-2', 'ring-brand-500');
+        }
+
+        function submitNewPost() {
+            const author = document.getElementById('modal-author').value || studentName;
+            const lesson = document.getElementById('modal-lesson').value;
+            const title = document.getElementById('modal-title').value;
+            const content = document.getElementById('modal-content').value;
+
+            if (!title || !content) {
+                alert("אנא מלאו את כותרת הפוסט ואת תוכנו!");
+                return;
+            }
+
+            const newPost = {
+                id: 'post-' + Date.now(),
+                author: author,
+                lesson: lesson,
+                title: title,
+                content: content,
+                color: selectedPostColor,
+                likes: 0,
+                comments: [],
+                timestamp: 'הרגע'
+            };
+
+            padletPosts.unshift(newPost);
+            saveAndRenderPadlet();
+            closeNewPostModal();
+            showToast("הפוסט שותף בלוח בהצלחה!", "fa-chalkboard-user");
+        }
+
+
+        // ==================== GEMINI API & AI CHAT WORKFLOW ====================
+
+        const apiKey = ""; // Runtime populated key
+
+        async function callGeminiApi(promptText) {
+            const maxRetries = 5;
+            let attempt = 0;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            // Context instruction for educational Gemini behavior
+            const systemPrompt = "אתה מדריך רשתות וסייבר מעודד וידידותי עבור תלמידי כיתה ט'. ענה בעברית מדוברת, בהירה ומעניינת. השתמש באנלוגיות פשוטות (כמו דואר, ספריות, כבישים מהירים) כדי להסביר מושגים מסובכים של רשתות תקשורת (IP, DNS, Packets, TCP, MAC address, IoT). שמור על בטיחות, עידוד יצירתיות, והשתמש באימוג'ים מתאימים.";
+
+            const payload = {
+                contents: [{ parts: [{ text: promptText }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            while (attempt < maxRetries) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) {
+                        return text;
+                    } else {
+                        throw new Error("Empty response");
+                    }
+                } catch (error) {
+                    attempt++;
+                    if (attempt >= maxRetries) throw error;
+                    const delay = Math.pow(2, attempt) * 1000; // Exponential backoff: 2s, 4s, 8s, 16s...
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+        }
+
+        // Send chat message
+        async function sendAiMessage() {
+            const input = document.getElementById('ai-user-input');
+            const messageText = input.value.trim();
+            if (!messageText) return;
+
+            // Render User Message
+            renderChatMessage('user', messageText, studentName);
+            input.value = "";
+
+            // Render Loading Spinner
+            const loadingId = 'loading-' + Date.now();
+            renderChatMessage('loading', 'הבוט חושב על תשובה מבריקה עבורך...', 'מדריך הרשת', loadingId);
+
+            try {
+                const responseText = await callGeminiApi(messageText);
+                // Remove loading element
+                document.getElementById(loadingId).remove();
+                // Render Response
+                renderChatMessage('bot', responseText, 'מדריך הרשת');
+            } catch (error) {
+                document.getElementById(loadingId).remove();
+                renderChatMessage('bot', `מצטער, חלה שגיאה בחיבור לשרת ה-AI: המפתח אינו זמין כעת או שחיבור הרשת נקטע.`, 'מערכת');
+            }
+        }
+
+        // Quick prompt helper
+        function sendQuickPrompt(promptText) {
+            document.getElementById('ai-user-input').value = promptText;
+            switchTab('ai-hub');
+            sendAiMessage();
+        }
+
+        function handleChatEnter(event) {
+            if (event.key === 'Enter') {
+                sendAiMessage();
+            }
+        }
+
+        // Render Message Box inside Chat
+        function renderChatMessage(sender, text, authorName, loadingId = null) {
+            const chatContainer = document.getElementById('ai-chat-messages');
+            const wrapper = document.createElement('div');
+            wrapper.className = "flex items-start gap-3";
+            if (loadingId) {
+                wrapper.id = loadingId;
+            }
+
+            let avatarHTML = "";
+            let bgClass = "";
+
+            if (sender === 'user') {
+                avatarHTML = `<div class="bg-indigo-600 text-white w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm"><i class="fa-solid fa-user-astronaut text-sm"></i></div>`;
+                bgClass = "bg-indigo-50 border border-indigo-100 text-indigo-950";
+            } else if (sender === 'loading') {
+                avatarHTML = `<div class="bg-slate-400 text-white w-8 h-8 rounded-full flex items-center justify-center shrink-0 animate-spin"><i class="fa-solid fa-spinner text-sm"></i></div>`;
+                bgClass = "bg-slate-100 italic text-slate-500 animate-pulse";
+            } else {
+                avatarHTML = `<div class="bg-brand-600 text-white w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm"><i class="fa-solid fa-robot text-sm"></i></div>`;
+                bgClass = "bg-slate-100 border border-slate-200 text-slate-800";
+            }
+
+            wrapper.innerHTML = `
+                ${avatarHTML}
+                <div class="${bgClass} p-3.5 rounded-2xl ${sender === 'user' ? 'rounded-tl-none' : 'rounded-tr-none'} text-sm max-w-[85%] leading-relaxed">
+                    <p class="font-bold text-xs ${sender === 'user' ? 'text-indigo-700' : 'text-brand-700'} mb-1">${authorName}:</p>
+                    <div class="whitespace-pre-line">${text}</div>
+                </div>
+            `;
+
+            chatContainer.appendChild(wrapper);
+            // Scroll to bottom
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+    </script>
+</body>
+</html>
