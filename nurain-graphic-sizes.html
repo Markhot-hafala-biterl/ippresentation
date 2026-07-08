@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>מידות בגרפיקה</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            color: #222;
+            direction: rtl;
+        }
+
+        header {
+            background-color: #2f4f4f;
+            color: white;
+            text-align: center;
+            padding: 35px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 40px;
+        }
+
+        header p {
+            font-size: 20px;
+        }
+
+        main {
+            width: 90%;
+            max-width: 1000px;
+            margin: 30px auto;
+        }
+
+        .intro {
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+
+        .sizes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 20px;
+            font-size: 20px;
+            border: none;
+            border-radius: 15px;
+            background-color: #6a9c89;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2f4f4f;
+        }
+
+        #result {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            min-height: 180px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            border-right: 8px solid #6a9c89;
+        }
+
+        #result h2 {
+            color: #2f4f4f;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: #e0f2ec;
+            padding: 8px 14px;
+            border-radius: 20px;
+            margin: 5px;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            background-color: #2f4f4f;
+            color: white;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>מידות בגרפיקה</h1>
+        <p>אתר לימודי לפוטושופ ואילוסטרייטור</p>
+    </header>
+
+    <main>
+
+        <section class="intro">
+            <h2>מה עושים עם כל מידה?</h2>
+            <p>
+                באתר זה ניתן ללחוץ על מידה מסוימת ולקבל מידע על סוגי עבודות גרפיות
+                שאפשר ליצור במידה זו, ובאיזו תוכנה מומלץ להשתמש.
+            </p>
+        </section>
+
+        <section class="sizes">
+            <button onclick="showInfo('business')">9 × 5 ס״מ</button>
+            <button onclick="showInfo('a4')">A4</button>
+            <button onclick="showInfo('a5')">A5</button>
+            <button onclick="showInfo('a3')">A3</button>
+            <button onclick="showInfo('instagram')">1080 × 1080 px</button>
+            <button onclick="showInfo('story')">1080 × 1920 px</button>
+            <button onclick="showInfo('banner')">1920 × 600 px</button>
+            <button onclick="showInfo('logo')">לוגו</button>
+        </section>
+
+        <section id="result">
+            <h2>בחרו מידה</h2>
+            <p>לחצו על אחת המידות למעלה כדי לקבל מידע.</p>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>נוריין כרים-אבו סחאב | פרויקט HTML</p>
+    </footer>
+
+    <script>
+        function showInfo(type) {
+            let result = document.getElementById("result");
+
+            if (type === "business") {
+                result.innerHTML = `
+                    <h2>9 × 5 ס״מ - כרטיס ביקור</h2>
+                    <p>מידה זו מתאימה בעיקר לעיצוב כרטיסי ביקור אישיים או עסקיים.</p>
+                    <p><strong>תוכנה מומלצת:</strong> Illustrator</p>
+                    <span class="tag">כרטיס ביקור</span>
+                    <span class="tag">כרטיס תלמיד</span>
+                    <span class="tag">כרטיס מועדון</span>
+                `;
+            }
+
+            if (type === "a4") {
+                result.innerHTML = `
+                    <h2>A4 - דף עבודה או תעודה</h2>
+                    <p>מידת A4 היא מידה נפוצה למסמכים, דפי עבודה, תעודות ומכתבים.</p>
+                    <p><strong>תוכנה מומלצת:</strong> Illustrator או Photoshop</p>
+                    <span class="tag">דף עבודה</span>
+                    <span class="tag">תעודה</span>
+                    <span class="tag">מסמך להדפסה</span>
+                `;
+            }
+
+            if (type === "a5") {
+                result.innerHTML = `
+                    <h2>A5 - פלייר קטן</h2>
+                    <p>מידת A5 מתאימה לפליירים, הזמנות קטנות ופרסום קצר.</p>
+                    <p><strong>תוכנה מומלצת:</strong> Illustrator או Photoshop</p>
+                    <span class="tag">פלייר</span>
+                    <span class="tag">הזמנה</span>
+                    <span class="tag">פרסום</span>
+                `;
+            }
+
+            if (type === "a3") {
+                result.innerHTML = `
+                    <h2>A3 - פוסטר</h2>
+                    <p>מידת A3 מתאימה לפוסטרים, כרזות ומודעות לתלייה.</p>
+                    <p><strong>תוכנה מומלצת:</strong> Illustrator לעיצוב וקטורי, Photoshop לעיצוב עם תמונות.</p>
+                    <span class="tag">פוסטר</span>
+                    <span class="tag">כרזה</span>
+                    <span class="tag">מודעה</span>
+                `;
+            }
+
+            if (type === "instagram") {
+                result.innerHTML = `
+                    <h2>1080 × 1080 px - פוסט לאינסטגרם</h2>
+                    <p>מידה ריבועית שמתאימה לפוסטים ברשתות חברתיות.</p>
+                    <p><strong>תוכנה מומלצת:</strong> Photoshop או Illustrator</p>
+                    <span class="tag">פוסט</span>
+                    <span class="tag">פרסום דיגיטלי</span>
+                    <span class="tag">רשתות חברתיות</span>
+                `;
+            }
+
+            if (type === "story") {
+                result.innerHTML = `
+                    <h2>1080 × 1920 px - סטורי</h2>
+                    <p>מידה אנכית שמתאימה לסטורי באינסטגרם, פייסבוק וטיקטוק.</p>
+                    <p><strong>תוכנה מומלצת:</strong> Photoshop</p>
+                    <span class="tag">סטורי</span>
+                    <span class="tag">מסך מובייל</span>
+                    <span class="tag">פרסום אנכי</span>
+                `;
+            }
+
+            if (type === "banner") {
+                result.innerHTML = `
+                    <h2>1920 × 600 px - באנר</h2>
+                    <p>מידה רחבה שמתאימה לבאנר באתר או לעיצוב כותרת לעמוד אינטרנט.</p>
+                    <p><strong>תוכנה מומלצת:</strong> Photoshop</p>
+                    <span class="tag">באנר</span>
+                    <span class="tag">כותרת אתר</span>
+                    <span class="tag">פרסום דיגיטלי</span>
+                `;
+            }
+
+            if (type === "logo") {
+                result.innerHTML = `
+                    <h2>לוגו - עיצוב וקטורי</h2>
+                    <p>לוגו לא חייב להיות במידה אחת קבועה, כי רצוי לעצב אותו כקובץ וקטורי שניתן להגדיל ולהקטין.</p>
+                    <p><strong>תוכנה מומלצת:</strong> Illustrator</p>
+                    <span class="tag">לוגו</span>
+                    <span class="tag">מיתוג</span>
+                    <span class="tag">סמל עסק</span>
+                `;
+            }
+        }
+    </script>
+
+</body>
+</html>
